@@ -19,6 +19,7 @@ class P9813 {
       int pinSclk, 
       int pinCS);
 
+    void writeColor(int index, uint32_t color);
     void writeColor(int index, uint8_t red, uint8_t green, uint8_t blue);
 };
 

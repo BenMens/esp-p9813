@@ -48,6 +48,11 @@ P9813::P9813(
 }
 
 
+void P9813::writeColor(int index, uint32_t color) {
+  writeColor(index, (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff);
+}
+
+
 void P9813::writeColor(int index, uint8_t red, uint8_t green, uint8_t blue) {
   static spi_transaction_t trans = {};
 
@@ -59,16 +64,16 @@ void P9813::writeColor(int index, uint8_t red, uint8_t green, uint8_t blue) {
 
     // Start by sending a byte with the format "1 1 /B7 /B6 /G7 /G6 /R7 /R6"
   tx_buffer[offset] = (1<<6) | (1<<7);
-  if ((blue & 0x80) == 0)  tx_buffer[offset] |= (1<<5);
-  if ((blue & 0x40) == 0)  tx_buffer[offset] |= (1<<4);
-  if ((green & 0x80) == 0) tx_buffer[offset] |= (1<<3);
-  if ((green & 0x40) == 0) tx_buffer[offset] |= (1<<2);
-  if ((red & 0x80) == 0)   tx_buffer[offset] |= (1<<1);
-  if ((red & 0x40) == 0)   tx_buffer[offset] |= (1<<0);
+  if ((green & 0x80) == 0)  tx_buffer[offset] |= (1<<5);
+  if ((green & 0x40) == 0)  tx_buffer[offset] |= (1<<4);
+  if ((red & 0x80) == 0) tx_buffer[offset] |= (1<<3);
+  if ((red & 0x40) == 0) tx_buffer[offset] |= (1<<2);
+  if ((blue & 0x80) == 0)   tx_buffer[offset] |= (1<<1);
+  if ((blue & 0x40) == 0)   tx_buffer[offset] |= (1<<0);
 
-  tx_buffer[offset + 1] = blue;
-  tx_buffer[offset + 2] = green;
-  tx_buffer[offset + 3] = red;
+  tx_buffer[offset + 1] = green;
+  tx_buffer[offset + 2] = red;
+  tx_buffer[offset + 3] = blue;
 
   ESP_ERROR_CHECK(spi_device_polling_start(spi, &trans, portMAX_DELAY));
 
